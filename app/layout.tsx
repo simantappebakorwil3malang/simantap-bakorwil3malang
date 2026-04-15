@@ -7,8 +7,8 @@ import { ThemeProvider } from "@/components/theme-provider";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "Arsip Bakorwil III",
-  description: "Sistem Navigasi Arsip Terpadu Bakorwil III Malang",
+  title: "SIMANTAP",
+  description: "Portal Navigasi SIMANTAP (Sistem Informasi Manajemen Administrasi Terpadu) PE BAKORWIL MALANG",
   manifest: "/manifest.json", 
   themeColor: "#1d4ed8",      
 };

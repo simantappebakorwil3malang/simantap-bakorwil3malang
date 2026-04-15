@@ -15,10 +15,10 @@ export default function Header() {
             <Archive className="w-5 h-5 text-white" />
           </div>
           <h1 className="text-xl font-bold text-slate-800 dark:text-slate-100 hidden sm:block">
-            Arsip Terpadu <span className="text-blue-700 dark:text-blue-500">Bakorwil III</span>
+            SIMANTAP
           </h1>
           <h1 className="text-xl font-bold text-slate-800 dark:text-slate-100 sm:hidden">
-            Arsip Bakorwil
+            SIMANTAP
           </h1>
         </div>
 

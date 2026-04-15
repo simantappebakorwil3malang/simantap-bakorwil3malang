@@ -1,7 +1,7 @@
 {
-  "name": "Arsip Terpadu Bakorwil III",
-  "short_name": "Arsip Bakorwil",
-  "description": "Sistem Navigasi Arsip Terpadu Bakorwil III Malang",
+  "name": "Sistem Informasi Manajemen Administrasi Terpadu",
+  "short_name": "SIMANTAP",
+  "description": "Portal Navigasi SIMANTAP (Sistem Informasi Manajemen Administrasi Terpadu) PE BAKORWIL MALANG",
   "start_url": "/dashboard",
   "display": "standalone",
   "background_color": "#ffffff",

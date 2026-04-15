@@ -62,7 +62,7 @@ export default function LoginPage() {
             Login Admin
           </CardTitle>
           <CardDescription className="text-base">
-            Sistem Navigasi Arsip Terpadu Bakorwil III Malang
+              Sistem Informasi Manajemen Administrasi Terpadu
           </CardDescription>
         </CardHeader>
 
