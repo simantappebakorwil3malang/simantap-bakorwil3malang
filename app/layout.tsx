@@ -1,5 +1,5 @@
 // app/layout.tsx
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "@/components/theme-provider";
@@ -10,7 +10,10 @@ export const metadata: Metadata = {
   title: "SIMANTAP",
   description: "Portal Navigasi SIMANTAP (Sistem Informasi Manajemen Administrasi Terpadu) PE BAKORWIL MALANG",
   manifest: "/manifest.json", 
-  themeColor: "#1d4ed8",      
+};
+
+export const viewport: Viewport = {
+  themeColor: "#1d4ed8",
 };
 
 export default function RootLayout({

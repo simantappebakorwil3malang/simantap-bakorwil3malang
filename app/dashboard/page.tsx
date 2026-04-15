@@ -3,9 +3,8 @@ import Image from "next/image";
 import Papa from "papaparse";
 import NavCard from "@/components/dashboard/NavCard";
 import * as Icons from "lucide-react"; 
-import { LucideIcon } from "lucide-react"; // Import tipe bawaan dari Lucide
+import { LucideIcon } from "lucide-react";
 
-// 1. Dibuatkan Interface khusus untuk menggantikan 'any'
 interface SheetRow {
   MenuName: string;
   IconName: string;
@@ -48,10 +47,8 @@ export default async function DashboardPage() {
     const iconKey = row.IconName as keyof typeof Icons;
     const IconComponent = (Icons[iconKey] as LucideIcon) || Icons.Folder; 
     
-    // 1. Beritahu TypeScript secara eksplisit bentuk tipe data array ini
     const buttons: { label: string; url: string; type: "primary" | "outline" | "brand" }[] = [];
 
-    // 2. Logika Pembuatan Tombol (Sudah dibersihkan dari duplikat)
     if (row.IconName === "Image" && row.LinkForm && row.LinkForm !== "-") {
       // Khusus untuk Canva
       buttons.push({ label: "Buka di Canva", url: row.LinkForm, type: "brand" });
