@@ -1,4 +1,3 @@
-// next.config.mjs
 import withPWAInit from "@ducanh2912/next-pwa";
 
 const withPWA = withPWAInit({
@@ -11,6 +10,24 @@ const withPWA = withPWAInit({
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  // 1. IZINKAN NEXT.JS MENGAMBIL GAMBAR DARI GOOGLE DRIVE
+  images: {
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'drive.google.com',
+      },
+      {
+        protocol: 'https',
+        hostname: '**.googleusercontent.com', // Mengizinkan semua subdomain googleusercontent
+      },
+      {
+        protocol: 'http',
+        hostname: 'googleusercontent.com', // Menyesuaikan format dari Apps Script
+      }
+    ],
+  },
+  
   async headers() {
     return [
       {
@@ -38,9 +55,9 @@ const nextConfig = {
             value: "max-age=31536000; includeSubDomains; preload",
           },
           {
-            // Content Security Policy (CSP) dasar untuk mencegah eksekusi script asing (XSS)
+            // 2. UPDATE CSP: Tambahkan link Google Drive ke bagian img-src
             key: "Content-Security-Policy",
-            value: "default-src 'self'; script-src 'self' 'unsafe-eval' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self' data:; connect-src 'self'",
+            value: "default-src 'self'; script-src 'self' 'unsafe-eval' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https://*.googleusercontent.com http://googleusercontent.com https://drive.google.com; font-src 'self' data:; connect-src 'self'",
           },
         ],
       },

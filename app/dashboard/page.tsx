@@ -1,21 +1,22 @@
 // app/dashboard/page.tsx
-import Image from "next/image";
 import Papa from "papaparse";
 import NavCard from "@/components/dashboard/NavCard";
+import HeroSlider from "@/components/dashboard/HeroSlider"; // <-- Import komponen baru
 import * as Icons from "lucide-react"; 
 import { LucideIcon } from "lucide-react";
 
+// 1. Tambahkan BannerImage dan BannerTitle di Interface
 interface SheetRow {
   MenuName: string;
   IconName: string;
   LinkForm?: string;
   LinkLampiran?: string;
   LinkHasil?: string;
+  BannerImage?: string; // <-- Kolom baru di Sheet
+  BannerTitle?: string; // <-- Kolom baru di Sheet
 }
 
-// Fungsi untuk menarik data dari Google Sheets CSV
 async function getNavigationData(): Promise<SheetRow[]> {
-  // 2. Mengambil link dari .env (Server-side)
   const csvUrl = process.env.SHEET_CSV_URL; 
   
   if (!csvUrl) {
@@ -27,7 +28,6 @@ async function getNavigationData(): Promise<SheetRow[]> {
     const response = await fetch(csvUrl, { cache: 'no-store' });
     const csvText = await response.text();
     
-    // 3. Memberikan tipe SheetRow ke PapaParse agar outputnya terstruktur
     const parsed = Papa.parse<SheetRow>(csvText, {
       header: true,      
       skipEmptyLines: true,
@@ -43,6 +43,14 @@ async function getNavigationData(): Promise<SheetRow[]> {
 export default async function DashboardPage() {
   const sheetData = await getNavigationData();
 
+  // 2. Ekstrak data khusus untuk Slider (filter yang ada link gambarnya dan bukan strip)
+  const bannerData = sheetData
+    .filter(row => row.BannerImage && row.BannerImage.trim() !== "" && row.BannerImage !== "-")
+    .map(row => ({
+      imageUrl: row.BannerImage!,
+      title: row.BannerTitle || "Kegiatan Bakorwil III Malang"
+    }));
+
   const dynamicNavItems = sheetData.map((row) => {
     const iconKey = row.IconName as keyof typeof Icons;
     const IconComponent = (Icons[iconKey] as LucideIcon) || Icons.Folder; 
@@ -50,10 +58,8 @@ export default async function DashboardPage() {
     const buttons: { label: string; url: string; type: "primary" | "outline" | "brand" }[] = [];
 
     if (row.IconName === "Image" && row.LinkForm && row.LinkForm !== "-") {
-      // Khusus untuk Canva
       buttons.push({ label: "Buka di Canva", url: row.LinkForm, type: "brand" });
     } else if (row.LinkForm && row.LinkForm !== "-") {
-      // Logika normal untuk Form yang lain
       buttons.push({ label: "Isi Form", url: row.LinkForm, type: "primary" });
     }
     
@@ -74,7 +80,7 @@ export default async function DashboardPage() {
 
   return (
     <div className="space-y-8">
-      {/* SECTION 1: HERO BANNER (Sambutan & Foto Kegiatan) */}
+      {/* SECTION 1: HERO BANNER */}
       <section className="bg-card text-card-foreground rounded-2xl border border-border shadow-sm overflow-hidden transition-colors duration-300">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-0">
           <div className="p-8 md:p-10 flex flex-col justify-center">
@@ -87,24 +93,15 @@ export default async function DashboardPage() {
             </p>
           </div>
           
-          <div className="relative h-64 lg:h-auto bg-slate-200">
-            <Image 
-              src="/pasar-murah.jpg" 
-              alt="Kegiatan Pasar Murah Bakorwil III Malang"
-              fill
-              className="object-cover"
-              priority
-            />
-            <div className="absolute inset-0 bg-linier-to-t from-black/60 to-transparent flex items-end p-6">
-              <span className="text-white font-medium text-sm md:text-base drop-shadow-md">
-                Kegiatan Pasar Murah Bidang Pembangunan Ekonomi
-              </span>
-            </div>
+          {/* 3. Panggil Komponen Slider di sini */}
+          <div className="relative h-64 lg:h-auto min-h-64">
+            <HeroSlider banners={bannerData} />
           </div>
+
         </div>
       </section>
 
-      {/* SECTION 2: Grid Menu Utama (Data dari Google Sheets) */}
+      {/* SECTION 2: Grid Menu Utama */}
       <section>
         <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6">
           {dynamicNavItems.map((item, index) => (
@@ -116,7 +113,6 @@ export default async function DashboardPage() {
             />
           ))}
           
-          {/* Fallback jika Google Sheets kosong atau gagal dimuat */}
           {dynamicNavItems.length === 0 && (
             <div className="col-span-full text-center p-8 border border-dashed rounded-xl text-muted-foreground flex flex-col items-center gap-2">
               <Icons.FileWarning className="w-8 h-8 text-muted-foreground/50" />
