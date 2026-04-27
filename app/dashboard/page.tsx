@@ -1,4 +1,6 @@
 // app/dashboard/page.tsx
+import { getServerSession } from "next-auth/next";
+import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import Papa from "papaparse";
 import NavCard from "@/components/dashboard/NavCard";
 import HeroSlider from "@/components/dashboard/HeroSlider"; // <-- Import komponen baru
@@ -42,8 +44,10 @@ async function getNavigationData(): Promise<SheetRow[]> {
 
 export default async function DashboardPage() {
   const sheetData = await getNavigationData();
+  
+  const session = await getServerSession(authOptions);
+  const userRole = session?.user?.role || "staff";
 
-  // 2. Ekstrak data khusus untuk Slider (filter yang ada link gambarnya dan bukan strip)
   const bannerData = sheetData
     .filter(row => row.BannerImage && row.BannerImage.trim() !== "" && row.BannerImage !== "-")
     .map(row => ({
@@ -57,17 +61,20 @@ export default async function DashboardPage() {
     
     const buttons: { label: string; url: string; type: "primary" | "outline" | "brand" }[] = [];
 
+    // Logika tombol Canva dan Form biasa (Berlaku untuk Admin & Staff)
     if (row.IconName === "Image" && row.LinkForm && row.LinkForm !== "-") {
       buttons.push({ label: "Buka di Canva", url: row.LinkForm, type: "brand" });
     } else if (row.LinkForm && row.LinkForm !== "-") {
       buttons.push({ label: "Isi Form", url: row.LinkForm, type: "primary" });
     }
     
+    // Logika Lampiran/SOP (Berlaku untuk Admin & Staff)
     if (row.LinkLampiran && row.LinkLampiran !== "-") {
       buttons.push({ label: "Lampiran", url: row.LinkLampiran, type: "outline" });
     }
     
-    if (row.LinkHasil && row.LinkHasil !== "-") {
+    // 4. Logika Lihat Hasil (HANYA MUNCUL JIKA ROLE === ADMIN)
+    if (row.LinkHasil && row.LinkHasil !== "-" && userRole === "admin") {
       buttons.push({ label: "Lihat Hasil", url: row.LinkHasil, type: "outline" });
     }
 
