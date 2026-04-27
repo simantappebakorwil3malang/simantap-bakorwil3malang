@@ -29,26 +29,36 @@ declare module "next-auth/jwt" {
 export const authOptions: NextAuthOptions = {
   providers: [
     CredentialsProvider({
-      name: "Kredensial Admin",
+      name: "Kredensial SIMANTAP",
       credentials: {
         username: { label: "Username", type: "text" },
         password: { label: "Password", type: "password" }
       },
       async authorize(credentials) {
-        const isValidUser = credentials?.username === configEnv.ADMIN_USERNAME;
-        const isValidPassword = credentials?.password === configEnv.ADMIN_PASSWORD;
+        // 1. Pengecekan Kredensial Admin
+        const isAdminUser = credentials?.username === configEnv.ADMIN_USERNAME;
+        const isAdminPassword = credentials?.password === configEnv.ADMIN_PASSWORD;
 
-        if (isValidUser && isValidPassword) {
+        if (isAdminUser && isAdminPassword) {
           return { id: "1", name: "Admin Bakorwil III", role: "admin" };
         }
         
+        // 2. Pengecekan Kredensial Staff
+        const isStaffUser = credentials?.username === configEnv.STAFF_USERNAME;
+        const isStaffPassword = credentials?.password === configEnv.STAFF_PASSWORD;
+
+        if (isStaffUser && isStaffPassword) {
+          return { id: "2", name: "Staff PE", role: "staff" };
+        }
+
+        // Jika salah username atau password, tolak akses
         return null;
       }
     })
   ],
   session: { 
     strategy: "jwt", 
-    maxAge: 4 * 60 * 60 
+    maxAge: 4 * 60 * 60 // Sesi otomatis berakhir dalam 4 jam
   },
   pages: { 
     signIn: "/login" 

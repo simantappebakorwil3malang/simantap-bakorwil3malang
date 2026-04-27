@@ -1,6 +1,6 @@
 // app/dashboard/page.tsx
 import { getServerSession } from "next-auth/next";
-import { authOptions } from "@/app/api/auth/[...nextauth]/route";
+import { authOptions } from "@/lib/auth";
 import Papa from "papaparse";
 import NavCard from "@/components/dashboard/NavCard";
 import HeroSlider from "@/components/dashboard/HeroSlider"; // <-- Import komponen baru
